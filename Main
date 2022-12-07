@@ -1,0 +1,249 @@
+import tkinter as tk
+from tkinter import ttk
+from tkinter import Button
+from _tkinter import *
+import turtle
+import math
+from random import randint
+
+# root window
+root = tk.Tk()
+root.geometry('600x500')
+root.resizable(True, True)
+root.title('Modular Multiplication Circle')
+
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=3)
+
+#change themes
+s = ttk.Style()
+#s.theme_use('default')
+
+# slider current value
+currentValueMulti = tk.IntVar()
+currentValuePoints = tk.IntVar()
+
+def get_current_valueMulti():
+    #print('{: .2f}'.format(currentValueMulti.get()))
+    return '{: .2f}'.format(currentValueMulti.get())
+def get_current_valuePoints():
+    #print('{: .2f}'.format(currentValuePoints.get()))
+    return '{: .2f}'.format(currentValuePoints.get())
+
+def slider_changedMulti(event):
+    value_labelMuli.configure(text=get_current_valueMulti())
+def slider_changedPoints(event):
+    value_labelPoints.configure(text=get_current_valuePoints())
+
+#label for the multiplier scrollbar
+multiplierLabel = ttk.Label(
+    root,
+    text='Multiplier: \n Use Left and Right arrows \n or mouse to control the silder'
+)
+
+multiplierLabel.grid(
+    column=0,
+    row=0,
+    sticky='w'
+)
+
+#label for the points scrollbar
+pointsLabel = ttk.Label(
+    root,
+    text='Points: \n Use Up and Down arrows \n or mouse to control the slider'
+)
+
+pointsLabel.grid(
+    column=0,
+    row=3,
+    sticky='w'
+)
+
+
+#multiplier slider
+multiplier = ttk.Scale(
+    root,
+    from_=0,
+    to=1000,
+    orient='horizontal',  # vertical
+    command=slider_changedMulti,
+    variable=currentValueMulti
+)
+
+#arrow key controls for multiplier slider
+root.bind("<Left>", lambda e: multiplier.set(multiplier.get()-1))
+root.bind("<Right>", lambda e: multiplier.set(multiplier.get()+1))
+root.bind("<Return>", lambda e: turtleDraw())
+
+#points slider
+points = ttk.Scale(
+    root,
+    from_=0,
+    to=1000,
+    orient='horizontal',  # vertical
+    command=slider_changedPoints,
+    variable=currentValuePoints
+)
+#arrow key for the points slider
+root.bind("<Down>", lambda e: points.set(points.get()-1))
+root.bind("<Up>", lambda e: points.set(points.get()+1))
+
+#multiplier grid
+multiplier.grid(
+    column=1,
+    row=0,
+    sticky= 'we'
+)
+#points grid
+points.grid(
+    column=1,
+    row=3,
+    sticky= 'we'
+)
+
+#multipler and points Label
+currentValueLabelMulti = ttk.Label(
+    root,
+    text='Multiplier Value:'
+)
+currentValueLabelPoints = ttk.Label(
+    root,
+    text='Points Value:'
+)
+
+#grid for multiplier and points label
+currentValueLabelMulti.grid(
+    row=1,
+    column=0,
+    sticky='w',
+    ipadx=10,
+    ipady=10
+)
+currentValueLabelPoints.grid(
+    row=4,
+    column=0,
+    sticky='w',
+    ipadx=10,
+    ipady=10
+)
+
+#multiplier and points value label
+value_labelMuli = ttk.Label(
+    root,
+    text=get_current_valueMulti()
+)
+
+value_labelPoints = ttk.Label(
+    root,
+    text=get_current_valuePoints()
+)
+
+#grid for multipler and point value 
+value_labelMuli.grid(
+    row=1,
+    column=0,
+    sticky='n',
+    ipadx=10,
+    ipady=10
+)
+value_labelPoints.grid(
+    row=4,
+    column=0,
+    sticky='n',
+    ipadx=10,
+    ipady=10
+)
+
+#Function that draws the modular multiplication circle 
+def turtleDraw():
+    #setup
+    turtle.speed(0)
+    turtle.bgcolor("black")
+    turtle.setup (width=800, height=800, startx=50/2, starty=50/2)
+    turtle.pencolor('white')
+    turtle.hideturtle()
+
+    turtle.colormode(255)
+
+
+    numOfPoints = currentValuePoints.get() #input("Enter the Number of points\n")
+    multi = currentValueMulti.get()#input("Enter the multiplier\n")
+    #math stuff
+    #numOfPoints = 194
+
+    r = 200.0
+    theta = (math.pi*2)/int(numOfPoints)
+    centerX = 0
+    centerY = 0
+
+    #turtle.penup()
+    #turtle.goto(0,-200)
+    #turtle.pendown()
+    #turtle.circle(200)
+
+    arrX = []
+    arrY = []
+
+    #pattern for circle is the tens plus the original circle numbers
+    # 24 would be 4, 67 would be 7, 10 would be 0
+    # 24mod10 = 4, 67mod10 = 7, 10mod10 = 0
+
+    colors = ['red', 'orange', 'yellow', 'green', 'purple', 'blue']
+
+    for i in range(int(numOfPoints)):
+        #puts all the points evenly spaced on the circle
+        pointX = r * math.cos(theta*i) + centerX 
+        pointY = r * math.sin(theta*i) + centerY
+        #stores coords
+        arrX.append(pointX)
+        arrY.append(pointY)
+        
+    for i in range(int(numOfPoints)):
+        #color
+        #red = randint(0, 255)
+        #g = randint(0, 255)
+        #b = randint(0, 255)
+        #turtle.pencolor(red,g,b)
+        #turtle.pencolor(colors[i%6])
+        
+        #tells which point to go to
+        #multi = 100 #multiplier
+        x = int(multi)*i  #x is the product of the multiplier and total num of points
+        l = x%int(numOfPoints) #l is the mod of x and num of points, 
+                        #basically if x goes over the multiplier it resets
+        #print(l)
+        
+        turtle.penup()
+        turtle.goto(arrX[i],arrY[i])
+        turtle.pendown()
+        turtle.goto(arrX[l],arrY[l])
+        
+
+    #for x in range(360):
+        #turtle.forward((2*x)%400)
+        #turtle.left((2*x)%400)
+
+    turtle.hideturtle()
+
+    turtle.Screen().exitonclick()
+
+#button that allows you to draw the circle
+button = ttk.Button(
+    root,
+    text='Click to Draw or press Enter',
+    style='W.TButton',
+    command= lambda: turtleDraw()
+)
+button.grid(
+    column=1,
+    row=6,
+    sticky='w',
+    ipadx=10,
+    ipady=10
+)
+
+
+
+root.mainloop()
+
+
