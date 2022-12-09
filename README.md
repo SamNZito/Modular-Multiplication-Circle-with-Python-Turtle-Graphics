@@ -11,7 +11,7 @@ The button can be press or the the enter key can be pressed to start the turtle.
 # Example1: 
 ---------------
 
-#Input Values 
+# Input Values 
 
 For example I input the numbers 10 for the number of points and 2 for the multiplier.
 
